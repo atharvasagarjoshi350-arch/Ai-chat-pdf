@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>AI PDF Reader</title>
+
+
+    <!-- Bootstrap -->
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+
+    <!-- Font Awesome -->
+
+    <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        rel="stylesheet"
+    >
+
+
+    <!-- Inter -->
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- ==========================================
+     NAVBAR
+========================================== -->
+
+<nav class="navbar">
+
+    <div class="container">
+
+        <div>
+
+            <div class="logo">
+
+                <i class="fa-solid fa-file-pdf"></i>
+
+                AI PDF Reader
+
+            </div>
+
+            <div class="subtext">
+
+                Upload PDFs • Ask Questions • AI Powered
+
+            </div>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+
+<div class="container py-5">
+
+
+<!-- ==========================================
+     UPLOAD SECTION
+========================================== -->
+
+<section class="upload-box" id="uploadBox">
+
+    <div class="upload-icon">
+
+        <i class="fa-solid fa-cloud-arrow-up"></i>
+
+    </div>
+
+
+    <h1>
+
+        Upload Your PDF
+
+    </h1>
+
+
+    <p>
+
+        Drag & Drop your PDFs here or choose files
+
+    </p>
+
+
+    <button
+        type="button"
+        class="btn btn-primary browse-btn"
+        id="browseBtn"
+    >
+
+        <i class="fa-solid fa-folder-open"></i>
+
+        Browse PDFs
+
+    </button>
+
+
+    <input
+        type="file"
+        id="pdfInput"
+        accept="application/pdf"
+        multiple
+        hidden
+    >
+
+
+    <!-- Selected files -->
+
+    <div
+        class="selected-file"
+        id="selectedFile"
+    >
+
+        <i class="fa-solid fa-file-pdf"></i>
+
+        <span id="selectedFileName">
+
+            No files selected
+
+        </span>
+
+    </div>
+
+
+    <button
+        type="button"
+        class="btn btn-primary upload-btn"
+        id="uploadBtn"
+        disabled
+    >
+
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+        Upload & Analyze
+
+    </button>
+
+
+    <!-- Progress -->
+
+    <div
+        class="upload-progress-container"
+        id="uploadProgressContainer"
+    >
+
+        <div class="progress">
+
+            <div
+                class="progress-bar progress-bar-striped progress-bar-animated"
+                id="uploadProgress"
+                style="width:0%"
+            ></div>
+
+        </div>
+
+
+        <div
+            class="upload-status"
+            id="uploadStatus"
+        >
+
+            Ready to upload
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================================
+     MY DOCUMENTS
+========================================== -->
+
+<section class="documents-section">
+
+    <div class="documents-header">
+
+        <div>
+
+            <div class="section-title">
+
+                <i class="fa-solid fa-folder-open"></i>
+
+                My Documents
+
+            </div>
+
+
+            <div class="section-subtitle">
+
+                All your uploaded PDFs
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="refresh-btn"
+            id="refreshDocumentsBtn"
+        >
+
+            <i class="fa-solid fa-rotate"></i>
+
+            Refresh
+
+        </button>
+
+    </div>
+
+
+    <!-- Loading -->
+
+    <div
+        class="documents-loading"
+        id="documentsLoading"
+    >
+
+        <div class="spinner-border text-primary"></div>
+
+        <span>
+
+            Loading documents...
+
+        </span>
+
+    </div>
+
+
+    <!-- Documents -->
+
+    <div
+        class="documents-grid"
+        id="documentsList"
+    ></div>
+
+
+    <!-- Empty -->
+
+    <div
+        class="no-documents"
+        id="noDocuments"
+    >
+
+        <div class="no-documents-icon">
+
+            <i class="fa-regular fa-folder-open"></i>
+
+        </div>
+
+        <h4>
+
+            No PDFs uploaded yet
+
+        </h4>
+
+        <p>
+
+            Upload your first PDF to get started.
+
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================================
+     ACTIVE DOCUMENT
+========================================== -->
+
+<section
+    class="active-document-card"
+    id="documentCard"
+    style="display:none;"
+>
+
+    <div class="active-document-icon">
+
+        <i class="fa-solid fa-file-circle-check"></i>
+
+    </div>
+
+
+    <div class="active-document-info">
+
+        <div class="active-document-label">
+
+            CURRENTLY CHATTING WITH
+
+        </div>
+
+
+        <div
+            class="active-document-name"
+            id="documentName"
+        >
+
+            —
+
+        </div>
+
+
+        <div class="active-document-stats">
+
+            <span>
+
+                <i class="fa-regular fa-file"></i>
+
+                <span id="documentPages">0</span>
+
+                pages
+
+            </span>
+
+
+            <span>
+
+                <i class="fa-solid fa-layer-group"></i>
+
+                <span id="documentChunks">0</span>
+
+                chunks
+
+            </span>
+
+
+            <span>
+
+                <i class="fa-solid fa-database"></i>
+
+                <span id="documentVectors">0</span>
+
+                vectors
+
+            </span>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================================
+     QUESTION
+========================================== -->
+
+<section
+    class="question-card"
+    id="questionCard"
+>
+
+    <div class="question-header">
+
+        <div class="question-icon">
+
+            <i class="fa-regular fa-comments"></i>
+
+        </div>
+
+
+        <div>
+
+            <h2>
+
+                Ask Your Question
+
+            </h2>
+
+
+            <p id="questionHint">
+
+                Select a PDF from My Documents first.
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <textarea
+        class="question-box"
+        id="questionInput"
+        placeholder="Example: What is the main purpose of this document?"
+        disabled
+    ></textarea>
+
+
+    <div class="question-actions">
+
+        <button
+            type="button"
+            class="btn btn-primary"
+            id="askBtn"
+            disabled
+        >
+
+            <i class="fa-solid fa-paper-plane"></i>
+
+            Ask AI
+
+        </button>
+
+    </div>
+
+
+    <!-- AI loading -->
+
+    <div
+        class="ai-loading"
+        id="aiLoading"
+    >
+
+        <div class="spinner-border text-primary"></div>
+
+        <span>
+
+            AI is reading your document...
+
+        </span>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================================
+     ANSWER
+========================================== -->
+
+<section
+    class="answer-card"
+    id="answerCard"
+    style="display:none;"
+>
+
+    <div class="answer-header">
+
+        <div class="answer-icon">
+
+            <i class="fa-solid fa-sparkles"></i>
+
+        </div>
+
+
+        <div>
+
+            <h2>
+
+                AI Answer
+
+            </h2>
+
+            <p>
+
+                Based on your selected PDF
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="answer-content"
+        id="answerContent"
+    ></div>
+
+
+    <hr>
+
+
+    <div>
+
+        <div class="sources-title">
+
+            <i class="fa-solid fa-link"></i>
+
+            Sources
+
+        </div>
+
+
+        <div
+            class="sources-list"
+            id="sourcesList"
+        ></div>
+
+    </div>
+
+
+    <div class="answer-actions">
+
+        <button
+            type="button"
+            class="btn btn-success action-btn"
+            id="copyBtn"
+        >
+
+            <i class="fa-solid fa-copy"></i>
+
+            Copy
+
+        </button>
+
+
+        <button
+            type="button"
+            class="btn btn-outline-secondary action-btn"
+            id="clearBtn"
+        >
+
+            <i class="fa-solid fa-xmark"></i>
+
+            Clear
+
+        </button>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================================
+     ERROR
+========================================== -->
+
+<div
+    class="error-box"
+    id="errorBox"
+>
+
+    <i class="fa-solid fa-circle-exclamation"></i>
+
+    <span id="errorMessage"></span>
+
+</div>
+
+
+
+<footer>
+
+    Powered by AI • Secure PDF Processing • Inline Source Citations
+
+</footer>
+
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
